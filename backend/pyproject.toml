@@ -2,7 +2,7 @@
 name = "farm-docker"
 version = "1.1.0"
 description = "Backend API for farm-docker"
-authors = ["Jonas Renault <jonasrenault@gmail.com>"]
+authors = ["Lawrence Linn <lawrence.rs.lin@gmail.com>"]
 readme = "README.md"
 packages = [
     { include = "app" },
