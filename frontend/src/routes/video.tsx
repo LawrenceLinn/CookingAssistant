@@ -1,4 +1,3 @@
-import React from 'react'
 import VideoStream from '../components/VideoStream'
 
 export default function Video() {
