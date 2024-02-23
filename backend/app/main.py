@@ -9,7 +9,7 @@ from .auth.auth import get_hashed_password
 from .config.config import settings
 from .models.users import User
 from .routers.api import api_router
-
+from fastapi import WebSocket
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
