@@ -5,6 +5,7 @@ import Login from './routes/login'
 import { Profile } from './routes/profile'
 import Register from './routes/register'
 import Root from './routes/root'
+import Video from './routes/video'
 import SSOLogin, { loader as ssoLoader } from './routes/sso.login'
 import Users, { loader as usersLoader } from './routes/users'
 
@@ -31,6 +32,10 @@ export const routes = [
       {
         path: 'register',
         element: <Register />,
+      },
+      {
+        path: 'video',
+        element: <Video />,
       },
       {
         path: 'users',

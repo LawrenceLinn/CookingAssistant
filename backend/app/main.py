@@ -54,6 +54,23 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    
+def process_video_data(data):
+    # 处理视频数据的伪代码
+    return data  # 返回处理后的数据
 
+@app.websocket("/ws/video")
+async def websocket_video(websocket: WebSocket):
+    # print in the console
+    print("websocket_video")
+    await websocket.accept()
+    while True:
+        data = await websocket.receive_bytes()
+        # 对视频数据进行处理
+        print("data", data)
+        # 这里是处理逻辑的伪代码
+        processed_data = process_video_data(data)
+        # 将处理后的视频数据发送回客户端
+        await websocket.send_bytes(processed_data)
 
 app.include_router(api_router, prefix=settings.API_V1_STR)

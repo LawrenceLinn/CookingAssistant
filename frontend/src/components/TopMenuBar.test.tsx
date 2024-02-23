@@ -49,6 +49,11 @@ function setup() {
         path: '/register',
         element: <>Navigated to r</>,
       },
+      {
+        path: '/video',
+        element: <>Navigated to video</>,
+      },
+      
     ],
     {
       initialEntries: ['/some-route'],

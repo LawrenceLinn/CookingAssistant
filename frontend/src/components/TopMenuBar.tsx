@@ -53,6 +53,9 @@ export default function TopMenuBar() {
             <Button component={NavLink} to='/register' sx={{ color: '#fff' }}>
               Register
             </Button>
+            <Button component={NavLink} to='/video' sx={{ color: '#fff' }}>
+              Video
+            </Button>
           </Box>
         )}
 
