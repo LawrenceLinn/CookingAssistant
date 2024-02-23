@@ -4,8 +4,8 @@ This directory contains the backend API app. It is built with [FastAPI](https://
 
 ## Requirements
 
-* [Poetry](https://python-poetry.org/) for Python package and environment management.
-* A [MongoDB](https://www.mongodb.com/) database for persistence.
+- [Poetry](https://python-poetry.org/) for Python package and environment management.
+- A [MongoDB](https://www.mongodb.com/) database for persistence.
 
 ## Install
 

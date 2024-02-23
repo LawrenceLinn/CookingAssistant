@@ -21,8 +21,8 @@ This is a template application for a FARM stack. FARM stands for FastAPI, React,
 
 The project is composed of :
 
-* a backend API server built with FastAPI located in the [backend](backend) dir.
-* a frontend web app build with React and located in the [frontend](frontend) dir.
+- a backend API server built with FastAPI located in the [backend](backend) dir.
+- a frontend web app build with React and located in the [frontend](frontend) dir.
 
 ## Running the application locally for development
 
@@ -46,15 +46,15 @@ The `--build` arg can be omitted after the images have been built at least once.
 
 Now you can open your browser and interact with these URLs:
 
-* Frontend, served with vite with hot reload of code: http://localhost
+- Frontend, served with vite with hot reload of code: http://localhost
 
-* Backend, JSON based web API based on OpenAPI, with hot code reloading: http://localhost/api/
+- Backend, JSON based web API based on OpenAPI, with hot code reloading: http://localhost/api/
 
-* Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost/docs
+- Automatic interactive documentation with Swagger UI (from the OpenAPI backend): http://localhost/docs
 
-* Alternative automatic documentation with ReDoc (from the OpenAPI backend): http://localhost/redoc
+- Alternative automatic documentation with ReDoc (from the OpenAPI backend): http://localhost/redoc
 
-* Traefik UI, to see how the routes are being handled by the proxy: http://localhost:8090
+- Traefik UI, to see how the routes are being handled by the proxy: http://localhost:8090
 
 Once the stack is up, to check the logs, run:
 
@@ -91,7 +91,6 @@ $ docker compose exec backend bash
 ```
 
 This will give you access to a bash session in the `backend` container. Change the name of the container to the one you want to access.
-
 
 ### Docker Compose settings for production
 

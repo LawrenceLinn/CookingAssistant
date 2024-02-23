@@ -53,7 +53,6 @@ function setup() {
         path: '/video',
         element: <>Navigated to video</>,
       },
-      
     ],
     {
       initialEntries: ['/some-route'],

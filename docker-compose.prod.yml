@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   proxy:
@@ -63,7 +63,7 @@ services:
       # traefik.http.middlewares.auth.basicauth.users: admin:$$apr1$$8EVjn/nj$$GiLUZqcbueTFeD23SuB6x0 # username: admin, password: admin
 
   backend:
-    image: '${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}'
+    image: "${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     depends_on:
       - db
     env_file:
@@ -99,7 +99,7 @@ services:
       - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}"
 
   frontend:
-    image: '${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}'
+    image: "${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}"
     build:
       context: ./frontend
       args:
