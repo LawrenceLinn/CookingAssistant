@@ -5,8 +5,8 @@ const VideoStream: React.FC = () => {
 
   useEffect(() => {
     // 分别为视频和音频数据建立 WebSocket 连接
-    const videoWs = new WebSocket('ws://192.168.2.22:80/ws/video')
-    const audioWs = new WebSocket('ws://192.168.2.22:80/ws/audio')
+    const videoWs = new WebSocket('ws://192.168.2.92:80/ws/video')
+    const audioWs = new WebSocket('ws://192.168.2.92:80/ws/audio')
 
     navigator.mediaDevices
       .getUserMedia({
