@@ -11,7 +11,7 @@ const VideoStream: React.FC = () => {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
-        video: true,
+        video: { facingMode: 'environment' },
       })
       .then((stream) => {
         if (videoRef.current) {
