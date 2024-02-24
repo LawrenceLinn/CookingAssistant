@@ -11,7 +11,7 @@ const VideoStream: React.FC = () => {
     navigator.mediaDevices
       .getUserMedia({
         audio: true,
-        video: false,
+        video: true,
       })
       .then((stream) => {
         if (videoRef.current) {
