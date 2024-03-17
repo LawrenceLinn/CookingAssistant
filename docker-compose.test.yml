@@ -63,7 +63,7 @@ services:
       # traefik.http.middlewares.auth.basicauth.users: admin:$$apr1$$8EVjn/nj$$GiLUZqcbueTFeD23SuB6x0 # username: admin, password: admin
 
   backend:
-    image: "${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
+    image: "${DOCKER_IMAGE_BACKEND?Variable not set}:${TAG-latest}"
     depends_on:
       - db
     env_file:
@@ -72,18 +72,19 @@ services:
       - SERVER_NAME=${DOMAIN?Variable not set}
       - SERVER_HOST=https://${DOMAIN?Variable not set}
     volumes:
-      - app-static-data:/app/static
+      - ./backend:/app
     build:
       context: ./backend
       dockerfile: Dockerfile
       args:
         INSTALL_DEV: ${INSTALL_DEV-false}
+    command: /start-reload.sh
     labels:
       - traefik.enable=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.rule=PathPrefix(`/api`) || PathPrefix(`/docs`) || PathPrefix(`/redoc`) || PathPrefix(`/ws`)
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.tls.certresolver=le
-      # - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
+      - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
 
   db:
     image: mongo:latest
@@ -99,19 +100,23 @@ services:
       - "MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}"
 
   frontend:
-    image: "${DOCKER_PACKAGE_REPOSITORY?Variable not set}/${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}"
+    image: "${DOCKER_IMAGE_FRONTEND?Variable not set}:${TAG-latest}"
     build:
       context: ./frontend
+      dockerfile: Dockerfile.development
       args:
-        - FRONTEND_ENV=${FRONTEND_ENV-production}
-        - VITE_BACKEND_API_URL
-        - VITE_GA_TRACKING_ID
-        - VITE_PWD_SIGNUP_ENABLED
+        FRONTEND_ENV: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app # Synchronise docker container with local change
+      - /app/node_modules # Avoid re-copying local node_modules. Cache in volume. See https://stackoverflow.com/questions/29181032/add-a-volume-to-docker-but-exclude-a-sub-folder
     env_file:
       - .env
+    command: npm run dev -- --host
     labels:
       - traefik.enable=true
-      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.rule=PathPrefix(`/`) || PathPrefix(`/ws`)
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-frontend-http.tls.certresolver=le
       # - traefik.http.services.${STACK_NAME?Variable not set}-frontend.loadbalancer.server.port=80

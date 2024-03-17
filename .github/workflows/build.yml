@@ -44,6 +44,6 @@ jobs:
         run: docker compose -f docker-compose.prod.yml build
 
       - name: Push image to container registry
-      # timeout-minutes: 30
+        # timeout-minutes: 30
         timeout-minutes: 30
         run: docker compose -f docker-compose.prod.yml push

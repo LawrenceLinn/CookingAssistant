@@ -13,6 +13,7 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import VideoAudioStreamer from './components/VideoAudioStreamer'
 
 const GA_TRACKING_ID: string = import.meta.env.VITE_GA_TRACKING_ID
 
@@ -21,14 +22,15 @@ if (GA_TRACKING_ID !== null && GA_TRACKING_ID !== undefined && GA_TRACKING_ID !=
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <AuthProvider>
-        <SnackBarProvider>
-          <RouterProvider router={router} />
-        </SnackBarProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  //   <ThemeProvider theme={theme}>
+  //     <CssBaseline />
+  //     <AuthProvider>
+  //       <SnackBarProvider>
+  //         <RouterProvider router={router} />
+  //       </SnackBarProvider>
+  //     </AuthProvider>
+  //   </ThemeProvider>
+  // </React.StrictMode>,
+  <VideoAudioStreamer />,
 )

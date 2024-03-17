@@ -56,6 +56,9 @@ export default function TopMenuBar() {
             <Button component={NavLink} to='/video' sx={{ color: '#fff' }}>
               Video
             </Button>
+            <Button component={NavLink} to='/text' sx={{ color: '#fff' }}>
+              Chat
+            </Button>
           </Box>
         )}
 
