@@ -7,6 +7,7 @@ import Register from './routes/register'
 import Root from './routes/root'
 import Video from './routes/video'
 import Text from './routes/text'
+import Image from './routes/image'
 import SSOLogin, { loader as ssoLoader } from './routes/sso.login'
 import Users, { loader as usersLoader } from './routes/users'
 
@@ -41,6 +42,10 @@ export const routes = [
       {
         path: 'text',
         element: <Text />,
+      },
+      {
+        path: 'image',
+        element: <Image />,
       },
       {
         path: 'users',

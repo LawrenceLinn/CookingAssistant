@@ -6,7 +6,7 @@ function Chat() {
   const [inputValue, setInputValue] = useState('')
 
   useEffect(() => {
-    const socket = new WebSocket('wss://192.168.2.22:443/ws/text') // 确保地址正确
+    const socket = new WebSocket('wss://localhost:443/ws/text') // 确保地址正确
 
     socket.onopen = () => {
       console.log('WebSocket Connected')

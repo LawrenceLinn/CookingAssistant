@@ -14,6 +14,10 @@ from .routers.offer import router as offer_router
 import cv2
 import numpy as np
 
+from PIL import Image
+import io
+# import torchvision.transforms as transforms 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Setup mongoDB
@@ -109,6 +113,30 @@ async def websocket_endpoint(websocket: WebSocket):
         data = await websocket.receive_text()
         await websocket.send_text(f"Message text was: {data}")
 
+
+@app.websocket("/ws/image")
+async def image(websocket: WebSocket):
+    await websocket.accept()
+    print("WebSocket connected for image processing")
+    while True:
+        data = await websocket.receive_bytes()
+
+        # Process the image data
+        image = Image.open(io.BytesIO(data))
+        width, height = image.size
+        
+        # Here, you can save the image, analyze it, etc.
+        # For demonstration, we'll just send back its dimensions
+
+        # image.save('test.jpg')
+        # transform = transforms.Compose([ 
+        #     transforms.PILToTensor() 
+        # ]) 
+
+        # img_tensor = transform(image) 
+        
+        await websocket.send_text(f"Image Received: {width}x{height}px, {image}")
+        # await websocket.send_text(f"Image Received: {data}")
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(offer_router, prefix="", tags=["offer"])
