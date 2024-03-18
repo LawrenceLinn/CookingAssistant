@@ -22,15 +22,15 @@ if (GA_TRACKING_ID !== null && GA_TRACKING_ID !== undefined && GA_TRACKING_ID !=
 }
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  // <React.StrictMode>
-  //   <ThemeProvider theme={theme}>
-  //     <CssBaseline />
-  //     <AuthProvider>
-  //       <SnackBarProvider>
-  //         <RouterProvider router={router} />
-  //       </SnackBarProvider>
-  //     </AuthProvider>
-  //   </ThemeProvider>
-  // </React.StrictMode>,
-  <VideoAudioStreamer />,
+  <React.StrictMode>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <SnackBarProvider>
+          <RouterProvider router={router} />
+        </SnackBarProvider>
+      </AuthProvider>
+    </ThemeProvider>
+  </React.StrictMode>,
+  // <VideoAudioStreamer />,
 )

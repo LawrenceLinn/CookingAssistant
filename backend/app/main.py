@@ -101,13 +101,13 @@ app.add_middleware(
 #         await websocket.send_bytes("Frame Received")
         
 
-# @app.websocket("/ws/text")
-# async def websocket_endpoint(websocket: WebSocket):
-#     await websocket.accept()
-#     print("websocket_endpoint")
-#     while True:
-#         data = await websocket.receive_text()
-#         await websocket.send_text(f"Message text was: {data}")
+@app.websocket("/ws/text")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    print("websocket_endpoint")
+    while True:
+        data = await websocket.receive_text()
+        await websocket.send_text(f"Message text was: {data}")
 
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
