@@ -138,5 +138,32 @@ async def image(websocket: WebSocket):
         # await websocket.send_text(f"Image Received: {width}x{height}px, {img_tensor}, {img_tensor.size()}")
         await websocket.send_text(f"Image Received: {img_tensor.size()} {img_tensor}")
 
+@app.websocket("/ws/imageCapture")
+async def imageCapture(websocket: WebSocket):
+    await websocket.accept()
+    print("WebSocket connected for image processing")
+    i = 0
+    while True:
+        i += 1
+        image_data = await websocket.receive_bytes()
+        
+        # Convert the bytes to a PIL Image
+        image = Image.open(io.BytesIO(image_data))
+        # width, height = image.size
+
+        # Optionally, save the image to disk
+        image.save("received_image.jpg")
+
+        transform = transforms.Compose([ 
+            transforms.PILToTensor() 
+        ]) 
+        
+        img_tensor = transform(image) 
+
+        # Send back a confirmation message with image dimensions
+        print(i)
+        print(img_tensor.size())
+        await websocket.send_text(f"Image received: {img_tensor}")
+
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(offer_router, prefix="", tags=["offer"])

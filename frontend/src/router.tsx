@@ -10,6 +10,7 @@ import Text from './routes/text'
 import Image from './routes/image'
 import SSOLogin, { loader as ssoLoader } from './routes/sso.login'
 import Users, { loader as usersLoader } from './routes/users'
+import ImageCapture from './routes/imageCapture'
 
 export const routes = [
   {
@@ -46,6 +47,10 @@ export const routes = [
       {
         path: 'image',
         element: <Image />,
+      },
+      {
+        path: 'imageCapture',
+        element: <ImageCapture />,
       },
       {
         path: 'users',
