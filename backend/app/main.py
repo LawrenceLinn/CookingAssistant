@@ -16,7 +16,7 @@ import numpy as np
 
 from PIL import Image
 import io
-# import torchvision.transforms as transforms 
+import torchvision.transforms as transforms 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -129,14 +129,14 @@ async def image(websocket: WebSocket):
         # For demonstration, we'll just send back its dimensions
 
         # image.save('test.jpg')
-        # transform = transforms.Compose([ 
-        #     transforms.PILToTensor() 
-        # ]) 
+        transform = transforms.Compose([ 
+            transforms.PILToTensor() 
+        ]) 
 
-        # img_tensor = transform(image) 
+        img_tensor = transform(image) 
         
-        await websocket.send_text(f"Image Received: {width}x{height}px, {image}")
-        # await websocket.send_text(f"Image Received: {data}")
+        # await websocket.send_text(f"Image Received: {width}x{height}px, {img_tensor}, {img_tensor.size()}")
+        await websocket.send_text(f"Image Received: {img_tensor.size()} {img_tensor}")
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(offer_router, prefix="", tags=["offer"])
