@@ -13,6 +13,7 @@ function Chat() {
   let url = 'wss://localhost:443/ws/text'
 
   useEffect(() => {
+    // Handle query parameters
     if (myParam) {
       url = 'wss://localhost:443/ws/text' + '?item_id=' + myParam
       console.log(url)
@@ -35,10 +36,12 @@ function Chat() {
         setMessages((prevMessages) => [...prevMessages, event.data])
         console.log(event.data)
       } else if (event.data instanceof Blob) {
+        // Read bytes
         const blob = event.data;
+        // Create url
         const imageUrl = URL.createObjectURL(blob);
         console.log(imageUrl)
-      
+        // Create element for image
         const targetImg = document.getElementById('img');
         targetImg.src = imageUrl
       };
@@ -57,7 +60,9 @@ function Chat() {
     if (ws) {
       ws.send(inputValue)
       setInputValue('')
+      // Display user input message
       var ul = document.getElementById("list");
+      // Dynamically add elements
       if (ul) {
         var li = document.createElement("li");
         li.appendChild(document.createTextNode('User: '+inputValue));

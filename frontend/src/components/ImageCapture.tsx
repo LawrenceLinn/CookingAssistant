@@ -40,8 +40,6 @@ function ImageCapture() {
       if (message.redirect) {
           console.log(message.redirect);
           socket.close()
-          // const newRoute = message.redirect.split('redirect:')[1];
-          // console.log(newRoute);
           setWsData(message.data);
           navigateTo(message.redirect);  // Using React Router for SPA internal redirect
       } else {
