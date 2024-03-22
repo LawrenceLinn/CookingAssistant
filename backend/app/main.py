@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 from beanie import init_beanie
 from fastapi import FastAPI, WebSocket
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -17,6 +18,9 @@ import numpy as np
 from PIL import Image
 import io
 import torchvision.transforms as transforms 
+
+# from app.test_model import Model
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -146,10 +150,9 @@ async def imageCapture(websocket: WebSocket):
     while True:
         i += 1
         image_data = await websocket.receive_bytes()
-        
+            
         # Convert the bytes to a PIL Image
         image = Image.open(io.BytesIO(image_data))
-        # width, height = image.size
 
         # Optionally, save the image to disk
         image.save("received_image.jpg")
@@ -157,13 +160,19 @@ async def imageCapture(websocket: WebSocket):
         transform = transforms.Compose([ 
             transforms.PILToTensor() 
         ]) 
-        
+            
         img_tensor = transform(image) 
 
         # Send back a confirmation message with image dimensions
         print(i)
         print(img_tensor.size())
         await websocket.send_text(f"Image received: {img_tensor}")
+        new_url = "/text"
+            
+        await websocket.send_text(f"redirect:{new_url}")
+        break
+    
+    return            
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(offer_router, prefix="", tags=["offer"])

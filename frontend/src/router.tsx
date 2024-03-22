@@ -53,6 +53,9 @@ export const routes = [
         element: <ImageCapture />,
       },
       {
+        path: 'redirected',
+      },
+      {
         path: 'users',
         element: <Users />,
         loader: usersLoader,
