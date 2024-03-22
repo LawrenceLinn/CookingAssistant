@@ -1,20 +1,47 @@
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 function Chat() {
   const [ws, setWs] = useState(null)
   const [messages, setMessages] = useState([])
+  const [imageSrc, setImageSrc] = useState([])
   const [inputValue, setInputValue] = useState('')
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const myParam = searchParams.get('item_id'); 
+
+  let url = 'wss://localhost:443/ws/text'
 
   useEffect(() => {
-    const socket = new WebSocket('wss://localhost:443/ws/text') // 确保地址正确
+    if (myParam) {
+      url = 'wss://localhost:443/ws/text' + '?item_id=' + myParam
+      console.log(url)
+    } else {
+      url = 'wss://localhost:443/ws/text'
+    }
 
+    var socket = new WebSocket(url) // 确保地址正确
+    
     socket.onopen = () => {
       console.log('WebSocket Connected')
       setWs(socket)
     }
 
     socket.onmessage = (event) => {
-      setMessages((prevMessages) => [...prevMessages, event.data])
+      // setMessages((prevMessages) => [...prevMessages, event.data])
+      // console.log(event.data)
+      if (typeof event.data === 'string') {
+        // Handle text message
+        setMessages((prevMessages) => [...prevMessages, event.data])
+        console.log(event.data)
+      } else if (event.data instanceof Blob) {
+        const blob = event.data;
+        const imageUrl = URL.createObjectURL(blob);
+        console.log(imageUrl)
+      
+        const targetImg = document.getElementById('img');
+        targetImg.src = imageUrl
+      };
     }
 
     // 只有在组件卸载时关闭 WebSocket 连接
@@ -30,11 +57,19 @@ function Chat() {
     if (ws) {
       ws.send(inputValue)
       setInputValue('')
+      var ul = document.getElementById("list");
+      if (ul) {
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode('User: '+inputValue));
+        ul.appendChild(li);
+        console.log('append')
+      }
     }
   }
 
   return (
-    <div>
+    <div id='div'>
+      <img id='img' src='' style={{ maxWidth: '30%', height: 'auto' }}></img>
       <h1>WebSocket Chat</h1>
       <form onSubmit={sendMessage}>
         <input
@@ -45,7 +80,7 @@ function Chat() {
         />
         <button type='submit'>Send</button>
       </form>
-      <ul>
+      <ul id='list'>
         {messages.map((message, index) => (
           <li key={index}>{message}</li>
         ))}

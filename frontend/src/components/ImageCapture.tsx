@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 function ImageCapture() {
   const [ws, setWs] = useState(null);
+  const [wsData, setWsData] = useState(null);
   const [stream, setStream] = useState(null);
   const videoRef = useRef(null);
   const [messages, setMessages] = useState([])
@@ -34,13 +35,15 @@ function ImageCapture() {
 
     socket.onmessage = (event) => {
       console.log('redirect');
-      const message = event.data;
-      if (message.startsWith("redirect:")) {
-          console.log(message);
+      // const message = event.data;
+      const message = JSON.parse(event.data);
+      if (message.redirect) {
+          console.log(message.redirect);
           socket.close()
-          const newRoute = message.split('redirect:')[1];
-          console.log(newRoute);
-          navigateTo('/text');  // Using React Router for SPA internal redirect
+          // const newRoute = message.redirect.split('redirect:')[1];
+          // console.log(newRoute);
+          setWsData(message.data);
+          navigateTo(message.redirect);  // Using React Router for SPA internal redirect
       } else {
           console.log("Message from server:", message);
           setMessages((prevMessages) => [...prevMessages, event.data])

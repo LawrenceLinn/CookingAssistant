@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 
 from beanie import init_beanie
-from fastapi import FastAPI, WebSocket
+from fastapi import FastAPI, WebSocket, Query
 from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -19,8 +19,8 @@ from PIL import Image
 import io
 import torchvision.transforms as transforms 
 
-# from app.test_model import Model
-
+from app.test_model import Model
+from app.test_lang_model import LangModel
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -51,6 +51,8 @@ app = FastAPI(
     openapi_url=f"{settings.API_V1_STR}/openapi.json",
     lifespan=lifespan,
 )
+
+app.itemID = 0
 
 # Set all CORS enabled origins
 # if settings.BACKEND_CORS_ORIGINS:
@@ -110,12 +112,32 @@ app.add_middleware(
         
 
 @app.websocket("/ws/text")
-async def websocket_endpoint(websocket: WebSocket):
+async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
     await websocket.accept()
-    print("websocket_endpoint")
+    if item_id:
+        # Read user input image by id
+        print('Query:', item_id)
+        img = Image.open('images/'+item_id+'.jpg')
+
+        # Pass image to model
+        model_result = Model(img)
+        
+        # Convert model output to byte array
+        model_img = model_result['image']
+        img_byte_arr = io.BytesIO()
+        model_img.save(img_byte_arr, format='PNG')
+        img_byte_arr = img_byte_arr.getvalue()
+
+        # Send to frontend
+        await websocket.send_bytes(img_byte_arr)
+        
     while True:
+        # Read user input
         data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
+        # Pass to lang model
+        print(data)
+        # Send to frontend
+        await websocket.send_text(f'ChatBot: {LangModel(data)}')
 
 
 @app.websocket("/ws/image")
@@ -149,14 +171,17 @@ async def imageCapture(websocket: WebSocket):
     i = 0
     while True:
         i += 1
+        print(app.itemID)
         image_data = await websocket.receive_bytes()
             
         # Convert the bytes to a PIL Image
         image = Image.open(io.BytesIO(image_data))
 
         # Optionally, save the image to disk
-        image.save("received_image.jpg")
-
+        image.save('images/'+str(app.itemID)+".jpg")
+        item_id = str(app.itemID)
+        app.itemID += 1
+        
         transform = transforms.Compose([ 
             transforms.PILToTensor() 
         ]) 
@@ -167,9 +192,10 @@ async def imageCapture(websocket: WebSocket):
         print(i)
         print(img_tensor.size())
         await websocket.send_text(f"Image received: {img_tensor}")
-        new_url = "/text"
+        new_url = "/text" + '?item_id=' + item_id
             
-        await websocket.send_text(f"redirect:{new_url}")
+        # await websocket.send_text(f"redirect:{new_url}")
+        await websocket.send_json({"redirect": new_url, "data": img_tensor.size()})
         break
     
     return            
