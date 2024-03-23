@@ -1,14 +1,12 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
-from ..models.langModel import LangModel
+from ..models.langModel import load_model, LangModel
 from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel
-
-import io
-from PIL import Image
-
 
 router = APIRouter()
 
 router.itemID = 0
+
+llm = load_model()
 
 @router.websocket("/ws/imageCapture")
 async def imageCapture(websocket: WebSocket):
@@ -17,12 +15,11 @@ async def imageCapture(websocket: WebSocket):
     i = 0
     while True:
         i += 1
-        print(router.itemID)
+        # Receive the image data
         image_data = await websocket.receive_bytes()
 
         # Convert the bytes to a PIL Image
         image = bytes2img(image_data)
-
 
         # Optionally, save the image to disk
         save_image(image, f"images/{str(router.itemID)}.jpg")
@@ -31,11 +28,6 @@ async def imageCapture(websocket: WebSocket):
         router.itemID += 1
         
         img_tensor = img2tensor(image)
-
-        # Send back a confirmation message with image dimensions
-        print(i)
-        print(img_tensor.size())
-        # await websocket.send_text(f"Image received: {img_tensor}")
 
         new_url = f"/text?item_id={item_id}"
             
@@ -57,21 +49,22 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         model_result = odModel(img)
         
         # Convert model output to byte array
-        model_img = model_result['image']
-        img_byte_arr = io.BytesIO()
-        model_img.save(img_byte_arr, format='PNG')
-        img_byte_arr = img_byte_arr.getvalue()
+        img_byte_arr = img2bytes(model_result['image'])
 
         # Send to frontend
         await websocket.send_bytes(img_byte_arr)
-        
+    
+
+    print("model loaded")
     while True:
         # Read user input
         data = await websocket.receive_text()
         # Pass to lang model
-        print(data)
+        
+        output = LangModel(llm, data)
+
         # Send to frontend
-        await websocket.send_text(f'ChatBot: {LangModel(data)}')
+        await websocket.send_text(f'ChatBot: {output}')
 
 
 

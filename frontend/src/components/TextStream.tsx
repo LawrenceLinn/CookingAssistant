@@ -15,7 +15,6 @@ function Chat() {
   useEffect(() => {
     // Handle query parameters
     if (myParam) {
-      // url = 'wss://:443/ws/text' + '?item_id=' + myParam
       url = `wss://192.168.2.22:443/ws/text?item_id=${myParam}`
     }
     //  else {
@@ -31,7 +30,7 @@ function Chat() {
 
     socket.onmessage = (event) => {
       // setMessages((prevMessages) => [...prevMessages, event.data])
-      // console.log(event.data)
+
       if (typeof event.data === 'string') {
         // Handle text message
         setMessages((prevMessages) => [...prevMessages, event.data])

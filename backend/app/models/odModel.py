@@ -5,7 +5,6 @@ from PIL import Image
 import io
 
 def bytes2img(image_bytes):
-    print(type(io.BytesIO(image_bytes)))
     image = Image.open(io.BytesIO(image_bytes))
     return image
 
