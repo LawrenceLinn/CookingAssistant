@@ -11,7 +11,7 @@ function ImageCapture() {
   const navigateTo = useNavigate();
 
   useEffect(() => {
-    const socket = new WebSocket('wss://localhost:443/ws/imageCapture'); // Make sure the address is correct
+    const socket = new WebSocket('wss://192.168.2.22:443/ws/imageCapture'); // Make sure the address is correct
 
     socket.onopen = () => {
       console.log('WebSocket Connected');
@@ -19,7 +19,7 @@ function ImageCapture() {
 
       // Access the camera
       if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices.getUserMedia({ video: true })
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
           .then(stream => {
             setStream(stream); // Store the stream for later use
             videoRef.current.srcObject = stream;
@@ -36,6 +36,7 @@ function ImageCapture() {
     socket.onmessage = (event) => {
       console.log('redirect');
       // const message = event.data;
+      console.log(event.data);
       const message = JSON.parse(event.data);
       if (message.redirect) {
           console.log(message.redirect);

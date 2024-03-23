@@ -10,16 +10,17 @@ function Chat() {
   const searchParams = new URLSearchParams(search);
   const myParam = searchParams.get('item_id'); 
 
-  let url = 'wss://localhost:443/ws/text'
+  let url = `wss://192.168.2.22:443/ws/text`
 
   useEffect(() => {
     // Handle query parameters
     if (myParam) {
-      url = 'wss://localhost:443/ws/text' + '?item_id=' + myParam
-      console.log(url)
-    } else {
-      url = 'wss://localhost:443/ws/text'
+      // url = 'wss://:443/ws/text' + '?item_id=' + myParam
+      url = `wss://192.168.2.22:443/ws/text?item_id=${myParam}`
     }
+    //  else {
+    //   url = 'wss://localhost:443/ws/text'
+    // }
 
     var socket = new WebSocket(url) // 确保地址正确
     
@@ -34,13 +35,11 @@ function Chat() {
       if (typeof event.data === 'string') {
         // Handle text message
         setMessages((prevMessages) => [...prevMessages, event.data])
-        console.log(event.data)
       } else if (event.data instanceof Blob) {
         // Read bytes
         const blob = event.data;
         // Create url
         const imageUrl = URL.createObjectURL(blob);
-        console.log(imageUrl)
         // Create element for image
         const targetImg = document.getElementById('img');
         targetImg.src = imageUrl

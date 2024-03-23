@@ -9,7 +9,7 @@ function Image() {
   const [imageSize, setImageSize] = useState(''); // For storing image size
 
   useEffect(() => {
-    const socket = new WebSocket('wss://localhost:443/ws/image'); // Make sure the address is correct
+    const socket = new WebSocket('wss://192.168.2.22:443/ws/image'); // Make sure the address is correct
 
     socket.onopen = () => {
       console.log('WebSocket Connected');

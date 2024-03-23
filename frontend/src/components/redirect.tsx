@@ -1,4 +1,4 @@
-let ws = new WebSocket("wss://localhost:443/ws/imageCapture");
+let ws = new WebSocket("wss://192.168.2.22:443/ws/imageCapture");
 console.log('redirect');
 
 ws.onmessage = function(event) {
@@ -6,6 +6,7 @@ ws.onmessage = function(event) {
     console.log('redirect');
     if (message.startsWith("redirect:")) {
         const newWsUrl = message.split("redirect:")[1];
+        console.log("Redirecting to:", newWsUrl);
         ws.close(); // Close the current WebSocket connection
         // Connect to the new WebSocket as instructed
         ws = new WebSocket(newWsUrl);
