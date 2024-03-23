@@ -10,8 +10,9 @@ function ImageCapture() {
   const canvasRef = useRef(null); // For capturing images from the video stream
   const navigateTo = useNavigate();
 
+
   useEffect(() => {
-    const socket = new WebSocket('wss://192.168.2.22:443/ws/imageCapture'); // Make sure the address is correct
+    const socket = new WebSocket(`wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/imageCapture`); // Make sure the address is correct
 
     socket.onopen = () => {
       console.log('WebSocket Connected');

@@ -1,4 +1,4 @@
-let ws = new WebSocket("wss://192.168.2.22:443/ws/imageCapture");
+let ws = new WebSocket(`wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/imageCapture`);
 console.log('redirect');
 
 ws.onmessage = function(event) {

@@ -6,7 +6,7 @@ router = APIRouter()
 
 router.itemID = 0
 
-llm = load_model()
+# llm = load_model()
 
 @router.websocket("/ws/imageCapture")
 async def imageCapture(websocket: WebSocket):
@@ -61,7 +61,8 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         data = await websocket.receive_text()
         # Pass to lang model
         
-        output = LangModel(llm, data)
+        # output = LangModel(llm, data)
+        output = data
 
         # Send to frontend
         await websocket.send_text(f'ChatBot: {output}')
