@@ -7,7 +7,7 @@ const VideoAudioStreamer = () => {
 
   useEffect(() => {
     // 创建WebSocket连接
-    const websocket = new WebSocket('wss://192.168.2.22:443/ws');
+    const websocket = new WebSocket(`wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws`);
 
     websocket.onopen = () => {
       console.log('WebSocket Connected');

@@ -10,13 +10,12 @@ function Chat() {
   const searchParams = new URLSearchParams(search);
   const myParam = searchParams.get('item_id'); 
 
-  let url = `wss://192.168.2.22:443/ws/text`
+  let url = `wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/text`
 
   useEffect(() => {
     // Handle query parameters
     if (myParam) {
-      // url = 'wss://:443/ws/text' + '?item_id=' + myParam
-      url = `wss://192.168.2.22:443/ws/text?item_id=${myParam}`
+      url = `wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/text?item_id=${myParam}`
     }
     //  else {
     //   url = 'wss://localhost:443/ws/text'
@@ -31,7 +30,7 @@ function Chat() {
 
     socket.onmessage = (event) => {
       // setMessages((prevMessages) => [...prevMessages, event.data])
-      // console.log(event.data)
+
       if (typeof event.data === 'string') {
         // Handle text message
         setMessages((prevMessages) => [...prevMessages, event.data])

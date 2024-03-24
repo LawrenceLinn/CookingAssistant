@@ -9,6 +9,7 @@ services:
     ports:
       - 443:443
       - 80:80
+      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./letsencrypt:/letsencrypt
@@ -17,7 +18,7 @@ services:
       # Enable Docker in Traefik, so that it reads labels from Docker services
       - --providers.docker
       # Do not expose all Docker services, only the ones explicitly exposed
-      - --providers.docker.exposedbydefault=false
+      - --providers.docker.exposedbydefault=true
       # Enable the access log, with HTTP requests
       - --accesslog
       # Enable the Traefik log, for configurations and errors
@@ -85,6 +86,31 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-backend-http.tls.certresolver=le
       - traefik.http.services.${STACK_NAME?Variable not set}-backend.loadbalancer.server.port=80
+
+  ollama:
+    env_file:
+      - .env
+    image: ollama/ollama:latest
+    volumes:
+      - ./ollama:/root/.ollama
+    ports:
+      - 11434:11434
+    environment:
+      - gpus=all  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-ollama-http.rule=PathPrefix(`/`)
+      - traefik.http.routers.${STACK_NAME?Variable not set}-ollama-http.tls=true
+      - traefik.http.routers.${STACK_NAME?Variable not set}-ollama-http.tls.certresolver=le
+      - traefik.http.services.${STACK_NAME?Variable not set}-ollama.loadbalancer.server.port=11434
+
 
   db:
     image: mongo:latest

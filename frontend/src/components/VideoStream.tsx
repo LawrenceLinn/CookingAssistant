@@ -5,8 +5,8 @@ const VideoStream: React.FC = () => {
 
   useEffect(() => {
     // 分别为视频和音频数据建立 WebSocket 连接
-    const videoWs = new WebSocket('wss://192.168.2.22:443/ws/video')
-    const audioWs = new WebSocket('wss://192.168.2.22:443/ws/audio')
+    const videoWs = new WebSocket(`wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/video`)
+    const audioWs = new WebSocket(`wss://${import.meta.env.VITE_IP_ADDRESS}:443/ws/audio`)
 
     // 监听连接开启事件
     videoWs.onopen = function (event) {
