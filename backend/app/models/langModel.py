@@ -3,20 +3,17 @@
 import torch
 # from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSeq2SeqLM
 from transformers import AutoProcessor, LlavaForConditionalGeneration
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.llms import Ollama
 
 def load_model():
-
-    model = LlavaForConditionalGeneration.from_pretrained("llava-hf/llava-1.5-7b-hf")
-    model.save_pretrained("./llm/")
-    processor = AutoProcessor.from_pretrained("llava-hf/llava-1.5-7b-hf")
-    processor.save_pretrained("./llm/")
-
-
-    return model, processor
+    model = Ollama(model="llama2",base_url="http://ollama:11434")
+    return model
     
 
 def LangModel(llm, user_input):
-    # use torch in mps
+
     output = llm.invoke(user_input)
 
     return output

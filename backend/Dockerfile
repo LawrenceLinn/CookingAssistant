@@ -28,5 +28,9 @@ EXPOSE 3478 3478/udp
 #Run coturn
 CMD ["turnserver", "-c", "/etc/turnserver.conf"]
 
+
+#Ollama
+ENV OLLAMA_HOST="ollama"
+
 COPY . /app
 ENV PYTHONPATH=/app

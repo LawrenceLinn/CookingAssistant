@@ -4,9 +4,10 @@ from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2
 
 router = APIRouter()
 
-router.itemID = 0
+llm = load_model()
+print("Model loaded")
 
-# llm = load_model()
+router.itemID = 0
 
 @router.websocket("/ws/imageCapture")
 async def imageCapture(websocket: WebSocket):
@@ -55,16 +56,11 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         await websocket.send_bytes(img_byte_arr)
     
 
-    print("model loaded")
+
     while True:
         # Read user input
         data = await websocket.receive_text()
-        # Pass to lang model
-        
-        # output = LangModel(llm, data)
-        output = data
-
-        # Send to frontend
+        output = LangModel(llm, data)
         await websocket.send_text(f'ChatBot: {output}')
 
 
