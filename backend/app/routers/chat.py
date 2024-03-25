@@ -1,11 +1,8 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
-from ..models.langModel import load_model, LangModel
-from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel
+from ..models.langModel import *
+from ..models.odModel import *
 
 router = APIRouter()
-
-llm = load_model()
-print("Model loaded")
 
 router.itemID = 0
 
@@ -44,8 +41,9 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
     if item_id:
         # Read user input image by id
         print('Query:', item_id)
-        img = read_image(f"images/{item_id}.jpg")
-
+        img_path = f"images/{item_id}.jpg"
+        img = read_image(img_path)
+        img_b64 = img2b64(img)# to llava
         # Pass image to model
         model_result = odModel(img)
         
@@ -54,14 +52,22 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
 
         # Send to frontend
         await websocket.send_bytes(img_byte_arr)
-    
 
+        # llava result
+        llava_result = llava(img_b64)
+        # Send result to frontend
+        await websocket.send_text(f'ChatBot: {llava_result}')
+
+    llm, prompt = load_model(llava_result)
+    print("Model loaded")
 
     while True:
         # Read user input
-        data = await websocket.receive_text()
-        output = LangModel(llm, data)
+        user_input = await websocket.receive_text()
+        print(prompt)
+        output, prompt = LangModel(llm, prompt, user_input)
         await websocket.send_text(f'ChatBot: {output}')
+
 
 
 

@@ -24,7 +24,7 @@ function Chat() {
     var socket = new WebSocket(url) // 确保地址正确
     
     socket.onopen = () => {
-      console.log('WebSocket Connected')
+      console.log('WebSocket Connected111')
       setWs(socket)
     }
 
@@ -47,9 +47,9 @@ function Chat() {
 
     // 只有在组件卸载时关闭 WebSocket 连接
     return () => {
-      if (socket.readyState === WebSocket.OPEN) {
+      // if (socket.readyState === WebSocket.OPEN) {
         socket.close()
-      }
+      // }
     }
   }, []) // 空依赖数组意味着这个 effect 只在组件挂载时运行
 
@@ -65,7 +65,6 @@ function Chat() {
         var li = document.createElement("li");
         li.appendChild(document.createTextNode('User: '+inputValue));
         ul.appendChild(li);
-        console.log('append')
       }
     }
   }
@@ -73,7 +72,7 @@ function Chat() {
   return (
     <div id='div'>
       <img id='img' src='' style={{ maxWidth: '30%', height: 'auto' }}></img>
-      <h1>WebSocket Chat</h1>
+      <h1>Cooking Assistant</h1>
       <form onSubmit={sendMessage}>
         <input
           type='text'

@@ -36,11 +36,8 @@ function ImageCapture() {
 
     socket.onmessage = (event) => {
       console.log('redirect');
-      // const message = event.data;
-      console.log(event.data);
       const message = JSON.parse(event.data);
       if (message.redirect) {
-          console.log(message.redirect);
           socket.close()
           setWsData(message.data);
           navigateTo(message.redirect);  // Using React Router for SPA internal redirect
