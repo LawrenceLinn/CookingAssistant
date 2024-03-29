@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
 from ..models.langModel import load_model, LangModel
+# from ..models.test_model import load_model, LangModel
 from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel
 
 router = APIRouter()
@@ -53,6 +54,8 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         img_byte_arr = img2bytes(model_result['image'])
 
         # Send to frontend
+        ingredients = ', '.join(model_result['ingredients'])
+        await websocket.send_text(f'ingredients: {ingredients}')
         await websocket.send_bytes(img_byte_arr)
     
 
@@ -61,7 +64,7 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         # Read user input
         data = await websocket.receive_text()
         output = LangModel(llm, data)
-        await websocket.send_text(f'ChatBot: {output}')
+        await websocket.send_text(f'{output}')
 
 
 
