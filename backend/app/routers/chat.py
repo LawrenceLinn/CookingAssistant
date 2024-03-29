@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
 from ..models.langModel import load_model, LangModel
 # from ..models.test_model import load_model, LangModel
+from ..models.yolo.YOLO_V8 import YOLO_model
 from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel
 
 router = APIRouter()
@@ -48,7 +49,7 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         img = read_image(f"images/{item_id}.jpg")
 
         # Pass image to model
-        model_result = odModel(img)
+        model_result = YOLO_model(img)
         
         # Convert model output to byte array
         img_byte_arr = img2bytes(model_result['image'])
@@ -57,8 +58,6 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         ingredients = ', '.join(model_result['ingredients'])
         await websocket.send_text(f'ingredients: {ingredients}')
         await websocket.send_bytes(img_byte_arr)
-    
-
 
     while True:
         # Read user input
