@@ -1,15 +1,10 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
-<<<<<<< HEAD
-from ..models.langModel import *
-from ..models.odModel import *
-=======
 from ..models.langModel import load_model, LangModel
 # from ..models.test_model import load_model, LangModel
 from ..models.yolo.YOLO_V8 import YOLO_model
 from ..models.Fast_RCNN.rcnn import rcnn_model
 from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel, array2bytes
->>>>>>> wwy
-
+from ..models.recipe_recommender_agent import create_agent_executor
 router = APIRouter()
 
 router.itemID = 0
@@ -49,16 +44,6 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None), mo
     if item_id:
         # Read user input image by id
         print('Query:', item_id)
-<<<<<<< HEAD
-        img_path = f"images/{item_id}.jpg"
-        img = read_image(img_path)
-        img_b64 = img2b64(img)# to llava
-        # Pass image to model
-        model_result = odModel(img)
-        
-        # Convert model output to byte array
-        img_byte_arr = img2bytes(model_result['image'])
-=======
         img = read_image(f"images/{item_id}.jpg")
 
         if model=='1':
@@ -72,36 +57,26 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None), mo
             print('yolo')
             model_result = YOLO_model(img)
             img_byte_arr = img2bytes(model_result['image'])
->>>>>>> wwy
 
         # Send to frontend
         ingredients = ', '.join(model_result['ingredients'])
         await websocket.send_text(f'ingredients: {ingredients}')
         await websocket.send_bytes(img_byte_arr)
-<<<<<<< HEAD
-
-        # llava result
-        llava_result = llava(img_b64)
-        # Send result to frontend
-        await websocket.send_text(f'ChatBot: {llava_result}')
-
-    llm, prompt = load_model(llava_result)
-    print("Model loaded")
-
+    
+    agent_excutor = create_agent_executor()
+    chat_history = []
+    first = True
     while True:
         # Read user input
         user_input = await websocket.receive_text()
-        print(prompt)
-        output, prompt = LangModel(llm, prompt, user_input)
-        await websocket.send_text(f'ChatBot: {output}')
-=======
-
-    while True:
-        # Read user input
-        data = await websocket.receive_text()
-        output = LangModel(llm, data)
+        if first:
+            # Load model
+            user_input = f"I have {ingredients}, {user_input}"
+            first = False
+        result = agent_excutor.invoke({"input": user_input, "chat_history": chat_history })
+        chat_history.append((user_input, result["output"]))
+        output = result["output"]
         await websocket.send_text(f'{output}')
->>>>>>> wwy
 
 
 

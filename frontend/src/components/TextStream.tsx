@@ -28,7 +28,7 @@ function Chat() {
     var socket = new WebSocket(url) // 确保地址正确
     
     socket.onopen = () => {
-      console.log('WebSocket Connected111')
+      console.log('WebSocket Connected')
       setWs(socket)
     }
 
@@ -86,12 +86,6 @@ function Chat() {
 
       var section = document.getElementById("messages-chat");
       // Dynamically add elements
-<<<<<<< HEAD
-      if (ul) {
-        var li = document.createElement("li");
-        li.appendChild(document.createTextNode('User: '+inputValue));
-        ul.appendChild(li);
-=======
       if (section) {
         var message_div = document.createElement("div");
         message_div.className = 'message-text-only'
@@ -109,31 +103,11 @@ function Chat() {
         section.appendChild(message_div);
         section.scrollTop = section.scrollHeight;
         console.log('append')
->>>>>>> wwy
       }
     }
   }
 
   return (
-<<<<<<< HEAD
-    <div id='div'>
-      <img id='img' src='' style={{ maxWidth: '30%', height: 'auto' }}></img>
-      <h1>Cooking Assistant</h1>
-      <form onSubmit={sendMessage}>
-        <input
-          type='text'
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          autoComplete='off'
-        />
-        <button type='submit'>Send</button>
-      </form>
-      <ul id='list'>
-        {messages.map((message, index) => (
-          <li key={index}>{message}</li>
-        ))}
-      </ul>
-=======
     <div className="container">
       <section id='div' className='chat'>
         <section id='messages-chat' className='messages-chat'>
@@ -159,7 +133,6 @@ function Chat() {
           </button>
         </form>
       </div>
->>>>>>> wwy
     </div>
   )
 }
