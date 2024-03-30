@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import capture from '../icons/capture.png'
+import '../css/ImageCapture.css'
 
 function ImageCapture() {
   const [ws, setWs] = useState(null);
@@ -73,12 +75,14 @@ function ImageCapture() {
   }
 
   return (
-    <div>
-      <h1>Image Capture and Upload</h1>
-      <video ref={videoRef} autoPlay playsInline style={{ width: '300px' }}></video>
+    <div className='div'>
+      {/* <h1>Image Capture and Upload</h1> */}
+      <video className='canvas' ref={videoRef} autoPlay playsInline></video>
       
-      <canvas ref={canvasRef} width="300" height="300" style={{ display: 'none' }}></canvas>
-      <button onClick={() => { captureImage(); stopCamera(); }}>Capture and Upload</button>
+      <canvas ref={canvasRef} width="640px" height="640px" style={{ display: 'none' }}></canvas>
+      <button className='capture'  onClick={() => { captureImage(); stopCamera(); }}>
+        <img src={capture}/>
+      </button>
       <ul>
         {messages.map((message, index) => (
           <li key={index}>{message}</li>

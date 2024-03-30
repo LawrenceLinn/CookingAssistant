@@ -29,11 +29,17 @@ def img2bytes(image):
     imgByteArr = imgByteArr.getvalue()
     return imgByteArr
 
+<<<<<<< HEAD
 def img2b64(image):
     buffered = io.BytesIO()
     image.save(buffered, format="JPEG")  # You can change the format if needed
     img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
     return img_str
+=======
+def array2bytes(array):
+    img = Image.fromarray(array)
+    return img2bytes(img)
+>>>>>>> wwy
 
 def odModel(img):
 

@@ -37,6 +37,8 @@ langchain = "0.1.13"
 langchain-community = "0.0.29"
 transformers = "4.39.1"
 ollama = "0.1.7"
+ultralytics = "8.0.196"
+IPython = "8.21.0"
 #bitsandbytes = "^0.0"
 #pydantic-async = "0.1.0"
 

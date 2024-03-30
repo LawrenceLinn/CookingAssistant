@@ -1,6 +1,14 @@
 from fastapi import APIRouter, HTTPException, WebSocket, Query
+<<<<<<< HEAD
 from ..models.langModel import *
 from ..models.odModel import *
+=======
+from ..models.langModel import load_model, LangModel
+# from ..models.test_model import load_model, LangModel
+from ..models.yolo.YOLO_V8 import YOLO_model
+from ..models.Fast_RCNN.rcnn import rcnn_model
+from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel, array2bytes
+>>>>>>> wwy
 
 router = APIRouter()
 
@@ -27,7 +35,7 @@ async def imageCapture(websocket: WebSocket):
         
         img_tensor = img2tensor(image)
 
-        new_url = f"/text?item_id={item_id}"
+        new_url = f"/text?item_id={item_id}&model=0"
             
         # await websocket.send_text(f"redirect:{new_url}")
         await websocket.send_json({"redirect": new_url, "data": img_tensor.size()})
@@ -36,11 +44,12 @@ async def imageCapture(websocket: WebSocket):
     return       
      
 @router.websocket("/ws/text")
-async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
+async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None), model:str = Query(None)):
     await websocket.accept()
     if item_id:
         # Read user input image by id
         print('Query:', item_id)
+<<<<<<< HEAD
         img_path = f"images/{item_id}.jpg"
         img = read_image(img_path)
         img_b64 = img2b64(img)# to llava
@@ -49,9 +58,27 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         
         # Convert model output to byte array
         img_byte_arr = img2bytes(model_result['image'])
+=======
+        img = read_image(f"images/{item_id}.jpg")
+
+        if model=='1':
+            # FastRCNN
+            print('rcnn')
+            model_result = rcnn_model(f"images/{item_id}.jpg")
+            img_byte_arr = array2bytes(model_result['image'])
+
+        else:
+            # YOLO
+            print('yolo')
+            model_result = YOLO_model(img)
+            img_byte_arr = img2bytes(model_result['image'])
+>>>>>>> wwy
 
         # Send to frontend
+        ingredients = ', '.join(model_result['ingredients'])
+        await websocket.send_text(f'ingredients: {ingredients}')
         await websocket.send_bytes(img_byte_arr)
+<<<<<<< HEAD
 
         # llava result
         llava_result = llava(img_b64)
@@ -67,6 +94,14 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
         print(prompt)
         output, prompt = LangModel(llm, prompt, user_input)
         await websocket.send_text(f'ChatBot: {output}')
+=======
+
+    while True:
+        # Read user input
+        data = await websocket.receive_text()
+        output = LangModel(llm, data)
+        await websocket.send_text(f'{output}')
+>>>>>>> wwy
 
 
 
