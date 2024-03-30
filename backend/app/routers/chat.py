@@ -21,6 +21,7 @@ async def imageCapture(websocket: WebSocket):
         i += 1
         # Receive the image data
         image_data = await websocket.receive_bytes()
+        model_data = await websocket.receive_text()
 
         # Convert the bytes to a PIL Image
         image = bytes2img(image_data)
@@ -33,7 +34,11 @@ async def imageCapture(websocket: WebSocket):
         
         img_tensor = img2tensor(image)
 
-        new_url = f"/text?item_id={item_id}&model=0"
+        print('model data', model_data)
+        if model_data == 'yolo':
+            new_url = f"/text?item_id={item_id}&model=0"
+        else:
+            new_url = f"/text?item_id={item_id}&model=1"
             
         # await websocket.send_text(f"redirect:{new_url}")
         await websocket.send_json({"redirect": new_url, "data": img_tensor.size()})

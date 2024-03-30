@@ -11,6 +11,7 @@ function ImageCapture() {
   const [messages, setMessages] = useState([])
   const canvasRef = useRef(null); // For capturing images from the video stream
   const navigateTo = useNavigate();
+  let model = 'yolo';
 
 
   useEffect(() => {
@@ -59,6 +60,10 @@ function ImageCapture() {
     };
   }, []);
 
+  const setrcnn = () => {
+    model = 'rcnn'
+  }
+
   const captureImage = () => {
     const context = canvasRef.current.getContext('2d');
     context.drawImage(videoRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
@@ -66,6 +71,7 @@ function ImageCapture() {
     canvasRef.current.toBlob(blob => {
       if (ws && ws.readyState === WebSocket.OPEN) {
         ws.send(blob);
+        ws.send(model)
       }
     }, 'image/jpeg');
   };
@@ -84,7 +90,12 @@ function ImageCapture() {
       
       <canvas ref={canvasRef} width="640px" height="640px" style={{ display: 'none' }}></canvas>
       <button className='capture'  onClick={() => { captureImage(); stopCamera(); }}>
-        <img src={capture}/>
+        {/* <img src={capture}/> */}
+        YOLO
+      </button>
+      <button className='capture'  onClick={() => { setrcnn(); captureImage(); stopCamera(); }}>
+        {/* <img src={capture}/> */}
+        FAST RCNN
       </button>
       <ul>
         {messages.map((message, index) => (
