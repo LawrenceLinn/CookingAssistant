@@ -29,6 +29,10 @@ def img2bytes(image):
     print(type(imgByteArr))
     return imgByteArr
 
+def array2bytes(array):
+    img = Image.fromarray(array)
+    return img2bytes(img)
+
 def odModel(img):
 
     ingredients = ['A', 'B']

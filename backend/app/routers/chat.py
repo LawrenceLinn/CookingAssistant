@@ -2,7 +2,8 @@ from fastapi import APIRouter, HTTPException, WebSocket, Query
 from ..models.langModel import load_model, LangModel
 # from ..models.test_model import load_model, LangModel
 from ..models.yolo.YOLO_V8 import YOLO_model
-from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel
+from ..models.Fast_RCNN.rcnn import rcnn_model
+from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel, array2bytes
 
 router = APIRouter()
 
@@ -32,7 +33,7 @@ async def imageCapture(websocket: WebSocket):
         
         img_tensor = img2tensor(image)
 
-        new_url = f"/text?item_id={item_id}"
+        new_url = f"/text?item_id={item_id}&model=0"
             
         # await websocket.send_text(f"redirect:{new_url}")
         await websocket.send_json({"redirect": new_url, "data": img_tensor.size()})
@@ -41,18 +42,24 @@ async def imageCapture(websocket: WebSocket):
     return       
      
 @router.websocket("/ws/text")
-async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None)):
+async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None), model:str = Query(None)):
     await websocket.accept()
     if item_id:
         # Read user input image by id
         print('Query:', item_id)
         img = read_image(f"images/{item_id}.jpg")
 
-        # Pass image to model
-        model_result = YOLO_model(img)
-        
-        # Convert model output to byte array
-        img_byte_arr = img2bytes(model_result['image'])
+        if model=='1':
+            # FastRCNN
+            print('rcnn')
+            model_result = rcnn_model(f"images/{item_id}.jpg")
+            img_byte_arr = array2bytes(model_result['image'])
+
+        else:
+            # YOLO
+            print('yolo')
+            model_result = YOLO_model(img)
+            img_byte_arr = img2bytes(model_result['image'])
 
         # Send to frontend
         ingredients = ', '.join(model_result['ingredients'])
