@@ -72,9 +72,9 @@ function Chat() {
 
     // 只有在组件卸载时关闭 WebSocket 连接
     return () => {
-      if (socket.readyState === WebSocket.OPEN) {
+      // if (socket.readyState === WebSocket.OPEN) {
         socket.close()
-      }
+      // }
     }
   }, []) // 空依赖数组意味着这个 effect 只在组件挂载时运行
 

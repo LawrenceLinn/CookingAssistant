@@ -3,6 +3,7 @@ import torchvision
 import torchvision.transforms as T
 from PIL import Image
 import io
+import base64
 
 def bytes2img(image_bytes):
     image = Image.open(io.BytesIO(image_bytes))
@@ -26,9 +27,13 @@ def img2bytes(image):
     imgByteArr = io.BytesIO()
     image.save(imgByteArr, format='PNG')
     imgByteArr = imgByteArr.getvalue()
-    print(type(imgByteArr))
     return imgByteArr
 
+def img2b64(image):
+    buffered = io.BytesIO()
+    image.save(buffered, format="JPEG")  # You can change the format if needed
+    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    return img_str
 def array2bytes(array):
     img = Image.fromarray(array)
     return img2bytes(img)

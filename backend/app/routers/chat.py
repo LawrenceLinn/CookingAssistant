@@ -4,11 +4,8 @@ from ..models.langModel import load_model, LangModel
 from ..models.yolo.YOLO_V8 import YOLO_model
 from ..models.Fast_RCNN.rcnn import rcnn_model
 from ..models.odModel import bytes2img, read_image, save_image, img2tensor, img2bytes, odModel, array2bytes
-
+from ..models.recipe_recommender_agent import create_agent_executor
 router = APIRouter()
-
-llm = load_model()
-print("Model loaded")
 
 router.itemID = 0
 
@@ -70,12 +67,22 @@ async def websocket_endpoint(websocket: WebSocket, item_id:str = Query(None), mo
         ingredients = ', '.join(model_result['ingredients'])
         await websocket.send_text(f'ingredients: {ingredients}')
         await websocket.send_bytes(img_byte_arr)
-
+    
+    agent_excutor = create_agent_executor()
+    chat_history = []
+    first = True
     while True:
         # Read user input
-        data = await websocket.receive_text()
-        output = LangModel(llm, data)
+        user_input = await websocket.receive_text()
+        if first:
+            # Load model
+            user_input = f"I have {ingredients}, {user_input}"
+            first = False
+        result = agent_excutor.invoke({"input": user_input, "chat_history": chat_history })
+        chat_history.append((user_input, result["output"]))
+        output = result["output"]
         await websocket.send_text(f'{output}')
+
 
 
 
