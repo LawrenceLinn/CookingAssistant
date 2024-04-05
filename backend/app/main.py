@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 
 from beanie import init_beanie
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, Query
+from fastapi.responses import RedirectResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -9,7 +10,8 @@ from .auth.auth import get_hashed_password
 from .config.config import settings
 from .models.users import User
 from .routers.api import api_router
-from fastapi import WebSocket
+from .routers.offer import router as offer_router
+from .routers.chat import router as chat_router
 
 
 @asynccontextmanager
@@ -42,39 +44,26 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+
+
 # Set all CORS enabled origins
-if settings.BACKEND_CORS_ORIGINS:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=[
-            # See https://github.com/pydantic/pydantic/issues/7186 for reason of using rstrip
-            str(origin).rstrip("/")
-            for origin in settings.BACKEND_CORS_ORIGINS
-        ],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+# if settings.BACKEND_CORS_ORIGINS:
 
+app.add_middleware(
+    CORSMiddleware,
+    # allow_origins=[
+    #     # See https://github.com/pydantic/pydantic/issues/7186 for reason of using rstrip
+    #     str(origin).rstrip("/")
+    #     for origin in settings.BACKEND_CORS_ORIGINS
+    # ],
+    allow_origins=["*"],#TODO: tobe removed
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-def process_video_data(data):
-    # 处理视频数据的伪代码
-    return data  # 返回处理后的数据
-
-
-@app.websocket("/ws/video")
-async def websocket_video(websocket: WebSocket):
-    # print in the console
-    print("websocket_video")
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_bytes()
-        # 对视频数据进行处理
-        print("data", data)
-        # 这里是处理逻辑的伪代码
-        processed_data = process_video_data(data)
-        # 将处理后的视频数据发送回客户端
-        await websocket.send_bytes(processed_data)
-
+  
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(offer_router, prefix="", tags=["offer"])
+app.include_router(chat_router, prefix="", tags=["chat"])

@@ -6,8 +6,11 @@ import { Profile } from './routes/profile'
 import Register from './routes/register'
 import Root from './routes/root'
 import Video from './routes/video'
+import Text from './routes/text'
+import Image from './routes/image'
 import SSOLogin, { loader as ssoLoader } from './routes/sso.login'
 import Users, { loader as usersLoader } from './routes/users'
+import ImageCapture from './routes/imageCapture'
 
 export const routes = [
   {
@@ -36,6 +39,21 @@ export const routes = [
       {
         path: 'video',
         element: <Video />,
+      },
+      {
+        path: 'text',
+        element: <Text />,
+      },
+      {
+        path: 'image',
+        element: <Image />,
+      },
+      {
+        path: 'imageCapture',
+        element: <ImageCapture />,
+      },
+      {
+        path: 'redirected',
       },
       {
         path: 'users',

@@ -20,7 +20,6 @@ ENV VITE_APP_ENV=${FRONTEND_ENV}
 
 RUN npm run build
 
-
 FROM nginx:1.23.1
 
 # Remove default nginx configuration

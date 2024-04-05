@@ -13,6 +13,7 @@ import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
 import '@fontsource/roboto/500.css'
 import '@fontsource/roboto/700.css'
+import VideoAudioStreamer from './components/VideoAudioStreamer'
 
 const GA_TRACKING_ID: string = import.meta.env.VITE_GA_TRACKING_ID
 
@@ -31,4 +32,5 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       </AuthProvider>
     </ThemeProvider>
   </React.StrictMode>,
+  // <VideoAudioStreamer />,
 )

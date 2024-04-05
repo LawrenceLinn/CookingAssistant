@@ -1,1 +1,4 @@
 .vscode
+ollama/
+
+backend/app/models/Fast_RCNN/checkpoint_47.pth

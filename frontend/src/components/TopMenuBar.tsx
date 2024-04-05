@@ -41,13 +41,13 @@ export default function TopMenuBar() {
       <Toolbar>
         <Typography component='h1' variant='h6' color='inherit' noWrap sx={{ flexGrow: 1 }}>
           <Link component={NavLink} to='/' color='inherit' underline='none'>
-            FARMD
+            Cooking Assistant
           </Link>
         </Typography>
 
         {user === undefined && (
           <Box aria-label='button group'>
-            <Button component={NavLink} to='/login' sx={{ color: '#fff' }}>
+            {/* <Button component={NavLink} to='/login' sx={{ color: '#fff' }}>
               Login
             </Button>
             <Button component={NavLink} to='/register' sx={{ color: '#fff' }}>
@@ -55,6 +55,9 @@ export default function TopMenuBar() {
             </Button>
             <Button component={NavLink} to='/video' sx={{ color: '#fff' }}>
               Video
+            </Button> */}
+            <Button component={NavLink} to='/imageCapture' sx={{ color: '#fff' }}>
+              Home
             </Button>
           </Box>
         )}
