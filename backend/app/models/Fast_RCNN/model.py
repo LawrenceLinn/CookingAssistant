@@ -3,6 +3,7 @@ import torch.nn as nn
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 
+
 class CustomTwoMLPHead(nn.Module):
     def __init__(self, in_channels, representation_size):
         super(CustomTwoMLPHead, self).__init__()
@@ -17,14 +18,19 @@ class CustomTwoMLPHead(nn.Module):
         x = nn.functional.relu(self.fc8(x))
         return x
 
+
 class CustomFasterRCNN(torch.nn.Module):
-    def __init__(self, num_classes = 73):
+    def __init__(self, num_classes=73):
         super(CustomFasterRCNN, self).__init__()
-        self.model = torchvision.models.detection.fasterrcnn_resnet50_fpn(weights=torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT)
+        self.model = torchvision.models.detection.fasterrcnn_resnet50_fpn(
+            weights=torchvision.models.detection.FasterRCNN_ResNet50_FPN_Weights.DEFAULT
+        )
         in_channels = 12544
         representation_size = 1024
 
-        self.model.roi_heads.box_head = CustomTwoMLPHead(in_channels=in_channels, representation_size=representation_size)
+        self.model.roi_heads.box_head = CustomTwoMLPHead(
+            in_channels=in_channels, representation_size=representation_size
+        )
 
         in_features = self.model.roi_heads.box_predictor.cls_score.in_features
         self.model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)

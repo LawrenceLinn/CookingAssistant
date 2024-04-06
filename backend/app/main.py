@@ -45,7 +45,6 @@ app = FastAPI(
 )
 
 
-
 # Set all CORS enabled origins
 # if settings.BACKEND_CORS_ORIGINS:
 
@@ -56,13 +55,12 @@ app.add_middleware(
     #     str(origin).rstrip("/")
     #     for origin in settings.BACKEND_CORS_ORIGINS
     # ],
-    allow_origins=["*"],#TODO: tobe removed
+    allow_origins=["*"],  # TODO: tobe removed
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-  
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.include_router(offer_router, prefix="", tags=["offer"])

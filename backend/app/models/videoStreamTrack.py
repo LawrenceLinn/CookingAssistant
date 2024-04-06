@@ -5,6 +5,7 @@ from aiortc.contrib.media import MediaStreamError, MediaStreamTrack
 from aiortc.contrib.media import VideoFrame
 from aiortc.contrib.media import faces, eyes, smiles
 
+
 class VideoTransformTrack(MediaStreamTrack):
     """
     A video stream track that transforms frames from an another track.
@@ -74,11 +75,11 @@ class VideoTransformTrack(MediaStreamTrack):
         elif self.transform == "cv":
             img = frame.to_ndarray(format="bgr24")
             face = faces.detectMultiScale(img, 1.1, 19)
-            for (x, y, w, h) in face:
+            for x, y, w, h in face:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
             eye = eyes.detectMultiScale(img, 1.1, 19)
-            for (x, y, w, h) in eye:
+            for x, y, w, h in eye:
                 cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
             # smile = smiles.detectMultiScale(img, 1.1, 19)

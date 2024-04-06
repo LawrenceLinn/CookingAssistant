@@ -1,24 +1,23 @@
 .capture {
-    height: 15%;
-    width: 15%;
-    margin-top: 2%;
-  }
+  height: 15%;
+  width: 15%;
+  margin-top: 2%;
+}
 
 .capture img {
-    width: 40%;
-    margin-left: 1%;
+  width: 40%;
+  margin-left: 1%;
+}
 
-  }
-
-.div{
-    width: 100%;
-    display: flex; 
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2%;
+.div {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2%;
 }
 
 .canvas {
-    width: 60%;
+  width: 60%;
 }

@@ -1,23 +1,32 @@
 from fastapi import APIRouter, HTTPException, WebSocket
 from pydantic import BaseModel
-from aiortc import RTCSessionDescription, RTCPeerConnection, VideoStreamTrack, RTCIceCandidate
+from aiortc import (
+    RTCSessionDescription,
+    RTCPeerConnection,
+    VideoStreamTrack,
+    RTCIceCandidate,
+)
 from aiortc.contrib.media import MediaPlayer, MediaRelay
 import asyncio
+
 
 class Offer(BaseModel):
     sdp: str
     type: str
+
 
 class Candidate(BaseModel):
     candidate: str
     sdpMid: str
     sdpMLineIndex: int
 
+
 router = APIRouter()
 
 pcs = set()  # Keep track of all PeerConnections
 
 relay = MediaRelay()  # Relay to efficiently manage media streams
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
@@ -55,15 +64,22 @@ async def websocket_endpoint(websocket: WebSocket):
             await pc.setRemoteDescription(offer)
             answer = await pc.createAnswer()
             await pc.setLocalDescription(answer)
-            await websocket.send_json({"type": "answer", "sdp": pc.localDescription.sdp})
+            await websocket.send_json(
+                {"type": "answer", "sdp": pc.localDescription.sdp}
+            )
         elif data["type"] == "candidate":
-            candidate = RTCIceCandidate(sdpMid=data["sdpMid"], sdpMLineIndex=data["sdpMLineIndex"], candidate=data["candidate"])
+            candidate = RTCIceCandidate(
+                sdpMid=data["sdpMid"],
+                sdpMLineIndex=data["sdpMLineIndex"],
+                candidate=data["candidate"],
+            )
             await pc.addIceCandidate(candidate)
         elif data["type"] == "disconnect":
             break
 
     await pc.close()
     pcs.discard(pc)
+
 
 @router.on_event("shutdown")
 async def shutdown():

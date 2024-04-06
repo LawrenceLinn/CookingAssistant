@@ -21,7 +21,16 @@ from langchain.prompts import MessagesPlaceholder
 from typing import Tuple, List
 from langchain_community.llms import Ollama
 
-def get_preference_summary(ingredients: List[str], quantity: int, time: int, preference: List[str], tools: List[str], course: str, cuision: str) -> dict:
+
+def get_preference_summary(
+    ingredients: List[str],
+    quantity: int,
+    time: int,
+    preference: List[str],
+    tools: List[str],
+    course: str,
+    cuision: str,
+) -> dict:
     summary = {
         "ingredients": ingredients,
         "quantity": quantity,
@@ -29,14 +38,16 @@ def get_preference_summary(ingredients: List[str], quantity: int, time: int, pre
         "preference": preference,
         "tools": tools,
         "course": course,
-        "cuision": cuision
+        "cuision": cuision,
     }
     return summary
 
+
 def get_top3_recipes(summary: dict) -> List[tuple]:
-    #TODO: replace with actual recommendation logic
-    
+    # TODO: replace with actual recommendation logic
+
     return [("Mushroom Risotto", 1), ("beef", 2), ("lamb", 3)]
+
 
 all_cuisions = [
     "American",
@@ -82,14 +93,30 @@ all_tools = [
     "Wok",
 ]
 
+
 class PreferenceSummarizationInput(BaseModel):
     ingredients: List[str] = Field(..., description="List of ingredients")
-    quantity: Optional[int] = Field(default=1, description="Desired quantity. Default is 1 serving.")
-    time: Optional[int] = Field(default=30, description="Maximum cooking time in minutes. eg.15, 30, 45, 60")
-    preference: Optional[List[str]] = Field(default=None, description="Meal preferences. Available options are:" f"{all_preferences}")
-    tools: Optional[List[str]] = Field(None, description="Required kitchen tools. Available options are:" f"{all_tools}")
-    course: Optional[str] = Field(None, description="Course type. Available options are:" f"{all_courses}")
-    cuision: Optional[str] = Field(None, description="Cuisine type. Available options are:" f"{all_cuisions}")
+    quantity: Optional[int] = Field(
+        default=1, description="Desired quantity. Default is 1 serving."
+    )
+    time: Optional[int] = Field(
+        default=30, description="Maximum cooking time in minutes. eg.15, 30, 45, 60"
+    )
+    preference: Optional[List[str]] = Field(
+        default=None,
+        description="Meal preferences. Available options are:" f"{all_preferences}",
+    )
+    tools: Optional[List[str]] = Field(
+        None,
+        description="Required kitchen tools. Available options are:" f"{all_tools}",
+    )
+    course: Optional[str] = Field(
+        None, description="Course type. Available options are:" f"{all_courses}"
+    )
+    cuision: Optional[str] = Field(
+        None, description="Cuisine type. Available options are:" f"{all_cuisions}"
+    )
+
 
 class PreferenceSummarizationTool(BaseTool):
     name = "PreferenceSummarization"
@@ -98,7 +125,7 @@ class PreferenceSummarizationTool(BaseTool):
 
     def _run(
         self,
-        ingredients: List[str]=...,
+        ingredients: List[str] = ...,
         quantity: Optional[int] = 1,
         time: Optional[int] = 30,
         preference: Optional[List[str]] = None,
@@ -108,13 +135,15 @@ class PreferenceSummarizationTool(BaseTool):
         run_manager: Optional[CallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool."""
-        summary = get_preference_summary(ingredients, quantity, time, preference, tools, course, cuision)
+        summary = get_preference_summary(
+            ingredients, quantity, time, preference, tools, course, cuision
+        )
         top3_recipes = get_top3_recipes(summary)
         # print(ingredients, quantity, time, preference, tools)
         output = f"This is the prefernce summary from user: {json.dumps(summary)}.\n And the top 3 recommending recipe:{top3_recipes}\n"
         # user_response = input()
         return output
-    
+
     async def _arun(
         self,
         ingredients: List[str],
@@ -127,14 +156,16 @@ class PreferenceSummarizationTool(BaseTool):
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ) -> str:
         """Use the tool asynchronously."""
-        summary = get_preference_summary(ingredients, quantity, time, preference, tools, course, cuision)
+        summary = get_preference_summary(
+            ingredients, quantity, time, preference, tools, course, cuision
+        )
         top3_recipes = get_top3_recipes(summary)
         # print(ingredients, quantity, time, preference, tools)
         output = f"This is the prefernce summary from user: {json.dumps(summary)}.\n And the top 3 recommending recipe:{top3_recipes}\n"
         return output
-    
 
-llm = Ollama(model="mixtral:8x7b-instruct-v0.1-q2_K",base_url="http://ollama:11434")
+
+llm = Ollama(model="mixtral:8x7b-instruct-v0.1-q2_K", base_url="http://ollama:11434")
 tools = [PreferenceSummarizationTool()]
 chat_model_with_stop = llm.bind(stop=["\nObservation"])
 
@@ -183,7 +214,7 @@ Final Answer: the final answer based on the result of the action
 
 Begin! Reminder to always use the exact characters `Final Answer` when responding.'
 """
-# 
+#
 # Thought: I now know the final answer
 # (this Thought/Action/Observation can repeat N times)
 prompt = ChatPromptTemplate.from_messages(
@@ -205,6 +236,7 @@ def _format_chat_history(chat_history: List[Tuple[str, str]]):
         buffer.append(HumanMessage(content=human))
         buffer.append(AIMessage(content=ai))
     return buffer
+
 
 agent = (
     {
@@ -228,14 +260,25 @@ class AgentInput(BaseModel):
     #     ..., extra={"widget": {"type": "scratchpad", "input": "input", "output": "output"}}
     # )
 
-class AgentOutput(BaseModel):  
+
+class AgentOutput(BaseModel):
     output: str
     chat_history: List[Tuple[str, str]] = Field(
         ..., extra={"widget": {"type": "chat", "input": "input", "output": "output"}}
     )
     agent_scratchpad: List[str] = Field(
-        ..., extra={"widget": {"type": "scratchpad", "input": "input", "output": "output"}}
+        ...,
+        extra={"widget": {"type": "scratchpad", "input": "input", "output": "output"}},
     )
 
+
 def create_agent_executor():
-    return AgentExecutor(agent=agent, tools=tools, verbose=True, return_intermediate_steps = True, handle_parsing_errors=True, return_scratchpad=True, max_iterations=5).with_types(input_type=AgentInput, output_type=AgentOutput)
+    return AgentExecutor(
+        agent=agent,
+        tools=tools,
+        verbose=True,
+        return_intermediate_steps=True,
+        handle_parsing_errors=True,
+        return_scratchpad=True,
+        max_iterations=5,
+    ).with_types(input_type=AgentInput, output_type=AgentOutput)

@@ -37,17 +37,16 @@ const VideoStream: React.FC = () => {
       console.log('Audio WebSocket is closed now.')
     }
 
-    const peer = new RTCPeerConnection();
-
+    const peer = new RTCPeerConnection()
 
     // 当WebRTC准备好将ICE候选发送到对方时
-    peer.onicecandidate = event => {
+    peer.onicecandidate = (event) => {
       if (event.candidate) {
-          videoWs.current.send(JSON.stringify({ candidate: event.candidate }));
+        videoWs.current.send(JSON.stringify({ candidate: event.candidate }))
       }
-    };  
+    }
 
-    console.log('peer', peer);
+    console.log('peer', peer)
 
     navigator.mediaDevices
       .getUserMedia({
@@ -59,8 +58,8 @@ const VideoStream: React.FC = () => {
         const videoTracks = stream.getVideoTracks()
         const audioTracks = stream.getAudioTracks()
         // 将音频和视频轨道添加到 RTCPeerConnection
-        videoTracks.forEach(track => peer.addTrack(track, stream));
-        audioTracks.forEach(track => peer.addTrack(track, stream));
+        videoTracks.forEach((track) => peer.addTrack(track, stream))
+        audioTracks.forEach((track) => peer.addTrack(track, stream))
 
         // // 创建用于视频的 MediaRecorder
         // const videoRecorder = new MediaRecorder(new MediaStream(videoTracks), {
@@ -95,11 +94,12 @@ const VideoStream: React.FC = () => {
         console.log('Error accessing media devices:', error)
       })
 
-      peer.createOffer()
-      .then(offer => peer.setLocalDescription(offer))
+    peer
+      .createOffer()
+      .then((offer) => peer.setLocalDescription(offer))
       .then(() => {
-          videoWs.current.send(JSON.stringify({ offer: peer.localDescription }));
-      });
+        videoWs.current.send(JSON.stringify({ offer: peer.localDescription }))
+      })
 
     // 组件卸载时关闭 WebSocket 连接
     return () => {

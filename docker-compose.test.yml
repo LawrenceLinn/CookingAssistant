@@ -96,7 +96,7 @@ services:
     ports:
       - 11434:11434
     environment:
-      - gpus=all  
+      - gpus=all
     deploy:
       resources:
         reservations:
@@ -110,7 +110,6 @@ services:
       - traefik.http.routers.${STACK_NAME?Variable not set}-ollama-http.tls=true
       - traefik.http.routers.${STACK_NAME?Variable not set}-ollama-http.tls.certresolver=le
       - traefik.http.services.${STACK_NAME?Variable not set}-ollama.loadbalancer.server.port=11434
-
 
   db:
     image: mongo:latest
